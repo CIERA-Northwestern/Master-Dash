@@ -1,0 +1,13 @@
+numpy
+pandas
+openpyxl
+matplotlib
+seaborn
+#sympy
+nbconvert
+nbformat
+PyYAML
+streamlit
+#pytest
+#ipython
+plotly
