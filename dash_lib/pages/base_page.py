@@ -17,7 +17,7 @@ from .. import dash_builder, utils
 importlib.reload(dash_builder)
 
 
-def main(config_fp: str, user_utils: types.ModuleType = None):
+def main(root:str,user_utils: types.ModuleType = None):
     '''This is the main function that runs the dashboard.
 
     Args:
@@ -25,32 +25,71 @@ def main(config_fp: str, user_utils: types.ModuleType = None):
         user_utils: The module containing the user-defined functions.
             Defaults to those in root_dash_lib.
     '''
-
+    
     pd.options.mode.copy_on_write = True
     # This must be the first streamlit command
     st.set_page_config(layout='wide')
+    st.title("the master dash")
+    st.subheader("outreach -- events -- visits -- press")
 
-    # Get the builder used to construct the dashboard
-    builder = dash_builder.DashBuilder(config_fp, user_utils=user_utils)
-
-    # Set the title that shows up at the top of the dashboard
-    st.title(builder.config.get('page_title','Dashboard'))
-    
     data_provided = False
     with st.container(border=True):
         datasource = st.radio("where to source the data?",
                  ["manual entry", "latest stored csv"], index=None)
+        st.text("manual data entry will attempt to automatically match the data provided to the specific dashboard by column name\nto view the latest stored csv, you must choose desired dash.")
         if datasource == "manual entry":
             datapattern = st.file_uploader("drag-and-drop your csv file")
             if datapattern is not None:
-                data_provided = True
+                #data_provided = True        
+                ## automatically determines the specific dashboard we are using from hard-coded headers
+                ind = -1
+                ## all stuff you want to input better match the column sets below
+                # or at least subset
+
+
+                # by index: event:1, press:2, visits:3, outreach:4
+                dash_patterns = [b'Calendar Group,Event Type Tags,id,Title,Category,Research Topic,Date,Duration,Attendance,Location,Year\r\n',
+                                 b'id,Title,Date,Permalink,Research Topics,Press Types,Categories,Press Mentions,People Reached,Top Outlets,,\r\n',
+                                 b'id,Name,Visitor Institution,ciera_visit_international,Post Date,Host,Host Types,Content,Permalink,"Start Date (UnixTimestamp -- date=(((UnixTimeStamp/60)/60)/24)+DATE(1970,1,1))",End Date (UnixTimestamp),Academic Year (as defined on website backend = FY-1),Programs,Tags\r\n',
+                                 b',,,Basic Info,,,,"Names of CIERA volunteers\n']
+                dash_cols = datapattern.readline()
+                if dash_cols in dash_patterns:
+                    ind = dash_patterns.index(dash_cols)
+
+                if ind == -1:
+                    st.text('Something went wrong; input data not recognized\nplease consult the manual for correct data formatting')
+                    data_provided = False
+                else:
+                    data_provided = True
+                    reverse_map = {0:'events', 1:'press', 2:'visits', 3:'outreach'}
+                    dashkey = reverse_map[ind]
+                    datapattern.seek(0, 0)
+
+
+
         elif datasource == 'latest stored csv':
             datapattern = None
             data_provided = True
 
+            dashkey = st.selectbox('select your dashboard to view', ['press', 'events', 'visits', 'outreach'], )
+            map = {'press':1, 'events':0, 'visits':2, 'outreach':3}
+            ind = map[dashkey]
+
+    
     # Prep data
     if data_provided:
-        data, config = builder.prep_data(builder.config, datapattern)
+        # get the correct config file
+        config_dir = root
+        config_fn = f'{dashkey}_configs.yml'
+        config_fp =  os.path.join(config_dir, config_fn)
+
+         # Get the builder used to construct the dashboard
+        builder = dash_builder.DashBuilder(config_fp=config_fp, dash_ind=ind)
+
+        # Set the title that shows up at the top of the dashboard
+        st.title(builder.config.get('page_title','Dashboard'))
+        
+        data, config = builder.prep_data(builder.config,dataset=datapattern)
         builder.config.update(config)
 
         # Global settings

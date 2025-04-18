@@ -6,12 +6,13 @@
 # Location of the data relative to the config
 data_dir: ./data
 
+
 # What day of the year to start on.
 # Default is September 1st, start of the Northwestern Financial Year
 start_of_year: September 1
 
 # Aesthetic options
-page_title: 'Outreach Data'
+page_title: 'Visit Data'
 # Seaborn color palette to use. More options at https://seaborn.pydata.org/tutorial/color_palettes.html
 color_palette: deep
 
@@ -23,41 +24,32 @@ color_palette: deep
 
 # Filetree options
 input_dirname: raw_data
-outreach: Outreach_Data-*.csv
-press: News_Report_Main*.csv
-events: events-live*.csv
-visits: Visits_Report-*.csv
+website_data_file_pattern: Visits_Report-*.csv
+press_office_data_file_pattern: press_office*.xls*
+combined_filename: press.csv
 
 # What to group by
 # If you add additional categorical columns to the data, you can specify them here and they will be added to the dashboard.
 groupings:
-  - Event Type
-  - Primary Audience Type
+  - Host Types
+  - Programs
 
 ## Column Classifications
 # The anything that's in a given grouping can be analyzed similarly.
 primary_id_column: index
 id_columns: # Unique identifiers
   - id
-  - Event Title
+  - Name
 numerical_columns: # Numeric columns that can be summed
-  - Total Attendees
+  - Visiting Days
 date_columns: # Dates
   - Date
-x_columns: # Data will be binned by these along the x-axis
-  - Year (Flexible) # For example, a value of 2019 would be grouped into the 2019-2020 financial year
 categorical_columns: # Categorical columns that can be grouped, e.g. all Press Types=="Science" articles
-  - Event Type
-  - Primary Audience Type
-  - Aggregate Volunteering Comparison
-  - Specific Volunteer Metrics
-
-# for specific CIERA volunteer metrics
-metrics_options:
-  - Grad Students
-  - Postdocs
-  - Faculty
-  - Staff
+  - Host Types
+  - Origin (International/Domestic)
+  - Programs
+  - Visitor Institution
+  - Host
   
 text_columns: # Text columns that can be searched
   - id
@@ -74,13 +66,13 @@ new_categories:
     'Internal': "'Development/Strategic' | 'Community Events'"
     'Research': "'Academic Seminars' | 'Conferences' | 'Collab/Group Meetings'"
     # Research topics are defined as falling into one of three main categories: Exploding & Dead Stars, Astrophysical Populations, and Exoplanets & the Solar System.
-#  Research Topic:
-#    'Compact Objects': "only ('Life and Death of Stars' | 'Gravitational Waves & Multi-Messenger Astronomy' | 'Black Holes & Dead Stars')"
-#    'Cosmological Populations': "only ('Galaxies & Cosmology' | 'Stellar Dynamics & Stellar Populations')"
+  Research Topic:
+    'Compact Objects': "only ('Life and Death of Stars' | 'Gravitational Waves & Multi-Messenger Astronomy' | 'Black Holes & Dead Stars')"
+    'Cosmological Populations': "only ('Galaxies & Cosmology' | 'Stellar Dynamics & Stellar Populations')"
   # Article categories are grouped into research, outreach, and achievements & events, with research and outreach categorization superseeding achievements & events.
-#  Category:
-#    'Research': "'Science' | 'Data Science & Computing' | 'Interdisciplinary'"
-#    'Outreach': "'Education' | 'Outreach' | 'Future Leaders'" 
+  Category:
+    'Research': "'Science' | 'Data Science & Computing' | 'Interdisciplinary'"
+    'Outreach': "'Education' | 'Outreach' | 'Future Leaders'" 
   
   # You can use the same source category for multiple new categories by placing the source column in brackets.
   #"Multi-messenger Astro vs everything else [Research Topic]":

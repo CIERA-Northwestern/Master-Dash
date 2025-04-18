@@ -23,10 +23,7 @@ color_palette: deep
 
 # Filetree options
 input_dirname: raw_data
-outreach: Outreach_Data-*.csv
-press: News_Report_Main*.csv
-events: events-live*.csv
-visits: Visits_Report-*.csv
+website_data_file_pattern: Outreach_Data-*.csv
 
 # What to group by
 # If you add additional categorical columns to the data, you can specify them here and they will be added to the dashboard.
@@ -67,12 +64,12 @@ text_columns: # Text columns that can be searched
 # In addition to boolean logic, preceeding the definition with 'only' will restrict the category to only the tags that show up in the proceeding definition.
 # Any categories not defined here will be left as is if they are the sole tag, or added to an 'Other' category if they are one of multiple tags.
 
-new_categories:
+#new_categories:
    # Research topics are defined as falling into one of three main categories: Exploding & Dead Stars, Astrophysical Populations, and Exoplanets & the Solar System.
-  Event Type Tags:
-    'R1': "'Public Outreach' | 'Future Leaders' | 'Education'"
-    'Internal': "'Development/Strategic' | 'Community Events'"
-    'Research': "'Academic Seminars' | 'Conferences' | 'Collab/Group Meetings'"
+#  Event Type Tags:
+#    'R1': "'Public Outreach' | 'Future Leaders' | 'Education'"
+#    'Internal': "'Development/Strategic' | 'Community Events'"
+#    'Research': "'Academic Seminars' | 'Conferences' | 'Collab/Group Meetings'"
     # Research topics are defined as falling into one of three main categories: Exploding & Dead Stars, Astrophysical Populations, and Exoplanets & the Solar System.
 #  Research Topic:
 #    'Compact Objects': "only ('Life and Death of Stars' | 'Gravitational Waves & Multi-Messenger Astronomy' | 'Black Holes & Dead Stars')"

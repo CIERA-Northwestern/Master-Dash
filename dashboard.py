@@ -1,7 +1,5 @@
 # Get the config file.
 import os
-config_dir = os.path.dirname(__file__)
-config_fn = 'config.yml'
 
 # Ensure the repository is added to the path
 # This should typically be accessible post pip-installation
@@ -17,4 +15,4 @@ if root_dir not in sys.path:
 import importlib
 from dash_lib.pages import base_page
 importlib.reload(base_page)
-base_page.main(os.path.join(config_dir, config_fn))
+base_page.main(root_dir)

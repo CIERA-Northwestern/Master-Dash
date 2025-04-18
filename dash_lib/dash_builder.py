@@ -9,11 +9,12 @@ import yaml
 import pandas as pd
 import streamlit as st
 
-from . import user_utils as default_user_utils
+from .user_utils import event_user_utils, outreach_utils, press_utils, visit_utils
+from .interfaces import event_interface, outreach_interface, press_interface, visit_interface
 from . import settings, data_handler, aggregator, data_viewer
-from interfaces import outreach_interface
+
 # We need to reload all the individual pieces if we want changes in them to propagate
-for module in [settings, outreach_interface, data_handler, aggregator, data_viewer]:
+for module in [settings, data_handler, aggregator, data_viewer]:
     importlib.reload(module)
 
 class DashBuilder:
@@ -28,15 +29,21 @@ class DashBuilder:
     def __init__(
         self,
         config_fp: str,
-        user_utils: types.ModuleType = None,
+        dash_ind: int,
     ):
+    
+        users_ = [event_user_utils, press_utils, visit_utils, outreach_utils]
+        interfaces_ = [event_interface, press_interface, visit_interface, outreach_interface]
+        user_utils = users_[dash_ind]
+        interface = interfaces_[dash_ind]
 
-        if user_utils is None:
-            user_utils = default_user_utils
+        importlib.reload(user_utils)
+        importlib.reload(interface)
+
 
         self.config = self.load_config(config_fp)
         self.settings = settings.Settings(self.config)
-        self.interface = outreach_interface.Interface(self.config, self.settings)
+        self.interface = interface.Interface(self.config, self.settings)
         self.data_handler = data_handler.DataHandler(self.config, user_utils)
         self.agg = aggregator.Aggregator(self.config)
         self.data_viewer = data_viewer.DataViewer(self.config, self.settings)
@@ -65,7 +72,7 @@ class DashBuilder:
         return config
 
     @st.cache_data
-    def prep_data(_self, config: dict, dataset=None) -> pd.DataFrame:
+    def prep_data(_self, config: dict, dataset) -> pd.DataFrame:
         '''Load, clean, and preprocess the data.
 
         *Note*: calculations cannot depend on any values updated during
