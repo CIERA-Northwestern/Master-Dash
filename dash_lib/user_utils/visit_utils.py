@@ -184,8 +184,10 @@ def preprocess_data(cleaned_df, config):
     #preprocessed_df['id'] = preprocessed_df.index
     preprocessed_df.set_index(np.arange(len(preprocessed_df)), inplace=True)
 
-    # flags all data that has end date of pre-Jan 1st, 2014 as "LEGACY" - 
-    #  @ request of Kari
+    #### Developer Note: 'legacy' is a CIERA specified field which delineates all data into
+    # current vs legacy bins, with the latter being defined as all entries before 2014
+    # this was done at the request of operations director Kari Frank
+    # best to keep it
     def legacy(date):
         if date.year < 2014:
             return "LEGACY"
@@ -194,7 +196,8 @@ def preprocess_data(cleaned_df, config):
     
     preprocessed_df['Legacy'] = preprocessed_df['Date'].apply(legacy)
 
-    #converts international boolean into text
+    #### Developer Note: this just converts the boolean international origin for research visit
+    # into a readable flag
     def nameify(is_int):
         if bool(is_int):
             return 'International'

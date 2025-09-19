@@ -17,6 +17,10 @@ from .. import dash_builder, utils
 importlib.reload(dash_builder)
 
 
+#### Developer Note:
+# sorry if the code is messy :/
+# we're trying to clean it up
+
 def main(root:str,user_utils: types.ModuleType = None):
     '''This is the main function that runs the dashboard.
 
@@ -32,6 +36,12 @@ def main(root:str,user_utils: types.ModuleType = None):
     st.title("the master dash")
     st.subheader("outreach -- events -- visits -- press")
 
+    # DASHBOARD SPECIFICATION
+    # user choice on which dashboard to view
+    # as well as where to source data from (manual entry or latest stored csv)
+    #######################################################################################
+
+
     data_provided = False
     with st.container(border=True):
         datasource = st.radio("where to source the data?",
@@ -39,12 +49,15 @@ def main(root:str,user_utils: types.ModuleType = None):
         st.text("manual data entry will attempt to automatically match the data provided to the specific dashboard by column name\nto view the latest stored csv, you must choose desired dash.")
         if datasource == "manual entry":
             datapattern = st.file_uploader("drag-and-drop your csv file")
+            
+            #### Developer Note:
+            # if you select manual entry, then we automatically match the provided csv with dashboard options
+            # by pattern matching on the column titles
+            # IF YOU ARE GOING TO MODIFY COLUMN TITLES, please change it here.
+            # it needs to be an exact match in order to pair, so even one column off will raise errors
+            # also, make sure the column titles are on the first row of the csv.
             if datapattern is not None:
-                #data_provided = True        
-                ## automatically determines the specific dashboard we are using from hard-coded headers
                 ind = -1
-                ## all stuff you want to input better match the column sets below
-                # or at least subset
 
 
                 # by index: event:1, press:2, visits:3, outreach:4
@@ -63,6 +76,7 @@ def main(root:str,user_utils: types.ModuleType = None):
                     data_provided = True
                     reverse_map = {0:'events', 1:'press', 2:'visits', 3:'outreach'}
                     dashkey = reverse_map[ind]
+                    # this just gets the pointer back to the start of the csv
                     datapattern.seek(0, 0)
 
 
@@ -75,7 +89,10 @@ def main(root:str,user_utils: types.ModuleType = None):
             map = {'press':1, 'events':0, 'visits':2, 'outreach':3}
             ind = map[dashkey]
 
-    
+    #######################################################################################
+    # At this point, you have sourced a csv to view, or selected the appropriate dashboard
+
+
     # Prep data
     if data_provided:
         # get the correct config file
@@ -115,6 +132,7 @@ def main(root:str,user_utils: types.ModuleType = None):
             ),
         )'''
 
+        ### Note:
         # for future reference, if you want to set artificial bounds for year/timescale, do it here
         min_year = int(data['preprocessed']['Date'].dt.year.min())
         max_year = int(data['preprocessed']['Date'].dt.year.max())
@@ -129,6 +147,7 @@ def main(root:str,user_utils: types.ModuleType = None):
         #print(axes_object)
 
         # filters data as per specs
+        # the specific interface used in filtering is determined with the choice of dashboard
         temp_data, selecset = builder.interface.process_filter_settings(
             st,
             data['preprocessed'],
@@ -143,39 +162,55 @@ def main(root:str,user_utils: types.ModuleType = None):
         )
 
         
-        ## If I have time:
-        # move all of the below into a seperate 'time adjuster' file
-        # want to make base page as indepedent as possible 
-
-        # filters data by year bounds selected (so that only entries which fall into this year-bound are displayed)
+        # TIME BOUNDING
+        # here, we bound the dashboard view by years/month specified by user
+        # all entries not falling into this bound are not shown
+        #######################################################################################
+        
+        
         reverse_month_dict = {1:'January', 2:'February', 3:'March', 4:'April', 5:'May',6:'June', 7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
 
         # extracts time information from axes_object
+        # i.e. when to start the year (by month) and year bounds
         time_object = axes_object['x_column'].split(':')
         month_start = int(time_object[1])
         year_start = int(time_object[2])
         year_end = int(time_object[3])
         years_to_display = list(range(year_start+1, year_end+1))
 
+        # redefines the year in terms of the user month start
+        # here is where you might outline fiscal year definitions (year starts in september) for example
         month_redef = [x if x<=12 else x-12 for x in range(month_start, 12+month_start)]
         defdate = datetime.date(min_year, 1, 1)
 
-
+        # gets the year of each entry in terms of the user specified period
+        # e.g. if an entry was registered in october of 2025, but you are selecting based in fiscal year
+        # the entry would have reindex year 2026 
         data['selected']['Reindexed Year'] = utils.get_year(
                 data['selected']['Date'], "{} 1".format(reverse_month_dict[month_start]),
                 default_date_start=min_year,
                 default_date_end=max_year
             )
+        
+        ######## 
+        ## here, we construct the actual time-bounded dataset, 'windowed'
+        ## I'm sure we could have done this in a better way, but as it stands, we first start by mapping all of the beginning year
+        # of the period's entries to the new dataset; then, we concatenate all relevant subsequent years
+        # its clunky, I know. but it should work (if you want to make a better version, be my guest)
         data['windowed'] = data['selected'][data['selected']['Reindexed Year'] == year_start]
-        
-        
 
+        ## above is the case if we have greater than one year selected
         if len(years_to_display) != 0:
             for i in years_to_display:
                 temp = data['selected'][data['selected']['Reindexed Year'] == i]
                 data['windowed'] = pd.concat([data['windowed'], temp])
 
             builder.settings.common['data']['x_column'] = 'Reindexed Year'
+
+        ### if no/one year is selected, i.e. if start year and end year are the same on slider,
+        # then we automatically break down into the month-by-month display for that year
+        # this entails decomposing that year's entries to month-by-month binning, while
+        # still taking into account user's desired start month
         if len(years_to_display) == 0:
 
             # For Fiscal Month visualizations
@@ -191,13 +226,18 @@ def main(root:str,user_utils: types.ModuleType = None):
                 return reverse_month_dict[int(month)]
             data['windowed']['Calendar Month'] = data['windowed']['Date'].dt.month.apply(month_extractor)
 
-        ### if no entries fall into this time window, we instantiate the whole graph with zeroes
+        ### if no entries fall into this time window, we instantiate the whole graph with zeroes,
+        # just for, like, normalization/regularization purposes going forward
+        # so other stuff doesn't completely freak out
         if data['windowed'].empty:
             locd = {}
             for i in data['windowed'].columns:
                 locd[i] = "normalization value; ignore for data purposes"
             data['windowed'].loc[0] = locd
-                
+    
+        #######################################################################################       
+    
+    
         # Here, we make a human-readable final datasheet by collapsing the exploded entries back into single, by unique entry id
         data['final'] = data['preprocessed'].filter(items=set(data['windowed'].index), axis=0)
     
@@ -205,6 +245,8 @@ def main(root:str,user_utils: types.ModuleType = None):
         time_class = builder.settings.common['data']['x_column']
         
         # Aggregate data
+
+        ###
         data['totals'] = builder.aggregate(
             data['windowed'],
             ('Calendar Month' if time_class == "Reindexed Month" else time_class),
@@ -214,7 +256,6 @@ def main(root:str,user_utils: types.ModuleType = None):
         
         # Aggregate data
         
-        #### SOLVED THE AGGREGATION THING
         data['aggregated'] = builder.aggregate(
                 data['windowed'],
                 ('Calendar Month' if time_class == "Reindexed Month" else time_class),
@@ -223,12 +264,14 @@ def main(root:str,user_utils: types.ModuleType = None):
                 builder.settings.common['data']['aggregation_method'],
         )
         
-
-
-        #print(data['aggregated'])
-        ### WORKING ON IT
+        ##### AGGREGATION REFINING
+        # while we are declaring the 'aggregated' and 'total' datasets by above,
+        # that simple instantiation has a number of issues
+        # we solve those below, by kind of reinstantiating it?
+        # the key idea for below is going from a sparse dataframe (above) to a dense dataframe, which we want for display purposes
+        # it all works, as of 09/19/25
+        #######################################################################################
         
-        #print(builder.settings.common['data'])
         temp = data['aggregated'].sum()
         data['total by instance'] = pd.DataFrame(index = temp.index, data={'Aggregate': temp.values})
         data['total by instance'].sort_values(ascending=False, by='Aggregate', inplace=True)
@@ -238,12 +281,15 @@ def main(root:str,user_utils: types.ModuleType = None):
         years_to_display.insert(0, year_start)
         
         # If you are going to change the configs for x_columns, make sure they are reflected below!
+
+
+        ## essentially, how this works is we make sure that years without any data entries are still represented in aggregated and totals graphs
+        # we construct a new, dense, dataframe and set the aggregated and total to that
         if len(list(data['aggregated'].columns)) != 0:
 
             data['aggregated'] = data['aggregated'].T
             data['totals'] = data['totals'].T
-            
-            ### NEW ###
+    
             if time_class == 'Reindexed Month':
                 xaxis = [reverse_month_dict[i] for i in month_redef]
             elif time_class == 'Reindexed Year':
@@ -297,6 +343,8 @@ def main(root:str,user_utils: types.ModuleType = None):
 
             data['aggregated'] = aggregatee.T
         
+        #######################################################################################
+
         # adds NaN values to dataframe for viewing
         if 'categorical' in builder.settings.common['filters']:
             for topic in builder.settings.common['filters']['categorical'][builder.settings.get_settings(common_to_include=['data'])['groupby_column']]:
@@ -304,12 +352,15 @@ def main(root:str,user_utils: types.ModuleType = None):
                     data['aggregated'][topic] = [0 for i in range(len(data['aggregated'].index))]
 
         
-        #print(builder.settings.common['data'])
 
         st.header('Data Plotting')
         st.text("Note: data entries may correspond to multiple categories, and so be represented in each grouping")
         st.text("please be cognizant of this; an accurate count of all entries is provided by 'total' option in data settings")
 
+
+        ### Developer Note:
+        # this is view stuff; the legacy view options using the 'lineplot' view are left in place, if you want to mess with them
+        # however, we mainly use the 'testplot' option, as it is more flexible and uses plotly.
 
         # Lineplot IF data option is total or none
         data_option = builder.settings.common['data']['data_options']
