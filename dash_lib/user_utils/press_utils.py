@@ -92,16 +92,14 @@ def clean_data(raw_df, config):
         config (dict): The (possibly altered) configuration dictionary.
     '''
 
-    raw_df['Date'] = pd.to_datetime(raw_df['Date'], errors='coerce')
 
-    # Drop rows where 'Date' year is 1970
-    cleaned_df = raw_df[raw_df['Date'].dt.year != 1970]
-    
-    # # Drop drafts
-    # cleaned_df = raw_df.drop(
-    #     raw_df.index[raw_df['Date'].dt.year == 1970],
-    #     axis='rows',
-    # )
+
+    ### Developer Note: Originally, we were meant to clean up dates here as well,
+    # i.e. change to the datetime object and drop all nonsensical dates
+    # but, like, for some reason in only the press dashboard it didn't work?
+    # like, it never registered that the date was a datetime object later
+    # so we've moved it to the preprocessing section, where it seems to work fine.
+    cleaned_df = raw_df
 
     # Drop weird articles---ancient ones w/o a title or press type
     cleaned_df.dropna(
@@ -146,6 +144,24 @@ def preprocess_data(cleaned_df, config):
 
     preprocessed_df = cleaned_df.copy()
 
+    # new location for date reconstitution
+    preprocessed_df['Date'] = pd.to_datetime(preprocessed_df['Date'], errors='coerce')
+
+    # Drop rows where 'Date' year is 1970
+    preprocessed_df = preprocessed_df[preprocessed_df['Date'].dt.year != 1970]
+    
+    
+    ### Developer Note: 'legacy' is a CIERA specified field which delineates all data into
+    # current vs legacy bins, with the latter being defined as all entries before 2014
+    # this was done at the request of operations director Kari Frank
+    # best to keep it
+    def legacy(date):
+        if date.year < 2014:
+            return "LEGACY"
+        else:
+            return "CURRENT"
+    
+    preprocessed_df['Legacy'] = preprocessed_df['Date'].apply(legacy)
     # Get the year, according to the config start date
     '''
     preprocessed_df['Fiscal Year'] = utils.get_year(
@@ -171,14 +187,6 @@ def preprocess_data(cleaned_df, config):
     # so let's set up some new, unique IDs.
     preprocessed_df['id'] = preprocessed_df.index
     preprocessed_df.set_index(np.arange(len(preprocessed_df)), inplace=True)
-
-    def legacy(date):
-        if date.year < 2014:
-            return "LEGACY"
-        else:
-            return "CURRENT"
-    
-    preprocessed_df['Legacy'] = preprocessed_df['Date'].apply(legacy)
 
 
     # This flag exists just to demonstrate you can modify the config

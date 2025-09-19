@@ -30,6 +30,13 @@ class DataViewer:
         data_handler: The data handler containing the relevant data.
     '''
 
+    #### Developer Note:
+    # lineplot and stackplot are legacy implementations of the view function, no longer 
+    # in active use (we migrated from manual graph instantiation w/ matplotlib to auto with plotly)
+    # currently active functions: barplot, testplot
+
+
+
     def __init__(self, config: dict, settings: Settings):
         self.config = config
         self.settings = settings
@@ -338,7 +345,7 @@ class DataViewer:
 
 
 
-
+    ## Deve
     def stackplot(
         self,
         df: pd.DataFrame,

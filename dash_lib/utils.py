@@ -19,6 +19,10 @@ def get_year(date, start_of_year='January 1', years_min=None, years_max=None, de
         years (pd.Series of int): The year of the date.
     '''
 
+    #### Developer Note:
+    # this should translate calendar year to user defined 12 month period (including fiscal and reporting years)
+    # however, this has been a contentious issue in the past, so you may want to double check the logic still works
+
     # Get date bins
     if years_min is None:
         years_min = date.min().year - 1

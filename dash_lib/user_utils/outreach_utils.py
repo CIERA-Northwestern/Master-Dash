@@ -205,6 +205,10 @@ def preprocess_data(cleaned_df, config):
     preprocessed_df['Date'] = pd.to_datetime(preprocessed_df['Date'], errors='coerce')
 
 
+    ### Developer Note: 'legacy' is a CIERA specified field which delineates all data into
+    # current vs legacy bins, with the latter being defined as all entries before 2014
+    # this was done at the request of operations director Kari Frank
+    # best to keep it
     
     def legacy(date):
         if date.year < 2014:

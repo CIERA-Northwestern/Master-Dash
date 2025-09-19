@@ -80,8 +80,11 @@ class DataHandler:
         )
     
 
-    # Recategorization stuff
-    # v
+    #### Developer Note: 
+    # the 'recategorize_data_per_grouping' was a function of the original, root dashboard
+    # developed by Zach Haden, but it is no longer used for the dashboards today
+    # we leave the code present in case you want to reintroduce it as a feature, 
+    # however keep in mind it may take a minute to reintegrate (we dropped it early)
     '''
     def recategorize_data_per_grouping(
         self,
