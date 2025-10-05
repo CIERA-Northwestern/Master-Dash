@@ -131,12 +131,16 @@ This will enable you to share your edits as a pull request.
 
 ### Code Structure
 The dashboard is designed to be as streamlined as possible, meaning any potentially redundant files are merged, and we only exhibit multiple copies of a file if absolutely necessary. Practically, this has amounted to:
-1. the central 'spine', consisting of
-   a. the base page in [pages](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/dash_lib/pages)
-   b. various pipeline and data processing files (such as aggregator or dash-builder, all located in dash_lib proper)
-3. metric specific offshoots
-   a. interfaces ([here](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/dash_lib/interfaces)) control visual presentation/user options for each metric
-   b. user_utils ([here](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/dash_lib/user_utils)) control metric-specific data preprocessing
+
+the central 'spine', consisting of:
+1. the base page in [pages](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/dash_lib/pages)
+2. various pipeline and data processing files (such as aggregator or dash-builder, all located in dash_lib proper)
+
+and metric specific offshoots
+1. interfaces ([here](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/dash_lib/interfaces)) control visual presentation/user options for each metric
+2. user_utils ([here](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/dash_lib/user_utils)) control metric-specific data preprocessing
+
+
 KEEP IN MIND: any change to the spine is global to all dashboards, while changes to offshoots are local, only modifying specific metric behaviour
 
 ### Updating the Usage and Installation Instructions
