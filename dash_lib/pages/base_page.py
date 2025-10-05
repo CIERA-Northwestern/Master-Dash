@@ -60,12 +60,13 @@ def main(root:str,user_utils: types.ModuleType = None):
                 ind = -1
 
 
-                # by index: event:1, press:2, visits:3, outreach:4
-                dash_patterns = [b'Calendar Group,Event Type Tags,id,Title,Category,Research Topic,Date,Duration,Attendance,Location,Year\r\n',
+                # by index: event:0, press:1, visits:2, outreach:3
+                dash_patterns = [b'Calendar Group,Event Type Tags,id,Title,Category,Research Topic,Date,Duration,Attendance,Location,Year\n',
                                  b'id,Title,Date,Permalink,Research Topics,Press Types,Categories,Press Mentions,People Reached,Top Outlets,,\r\n',
-                                 b'id,Name,Visitor Institution,ciera_visit_international,Post Date,Host,Host Types,Content,Permalink,"Start Date (UnixTimestamp -- date=(((UnixTimeStamp/60)/60)/24)+DATE(1970,1,1))",End Date (UnixTimestamp),Academic Year (as defined on website backend = FY-1),Programs,Tags\r\n',
-                                 b',,,Basic Info,,,,"Names of CIERA volunteers\n']
+                                 b'id,Name,"Visitor Institution",ciera_visit_international,"Post Date",Host,"Host Types",Content,Permalink,"Start Date (UnixTimestamp -- date=(((UnixTimeStamp/60)/60)/24)+DATE(1970,1,1))","End Date (UnixTimestamp)","Academic Year (as defined on website backend = FY-1)",Programs,Tags\n',
+                                 b',,,Basic Info,,,,"Names of CIERA volunteers\r\n']
                 dash_cols = datapattern.readline()
+                print(dash_cols)
                 if dash_cols in dash_patterns:
                     ind = dash_patterns.index(dash_cols)
 
