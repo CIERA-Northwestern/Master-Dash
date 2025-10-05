@@ -118,7 +118,25 @@ def clean_data(raw_df, config):
     cleaned_df[columns_to_fill] = cleaned_df[columns_to_fill].fillna(
         value=0
     )
-    cleaned_df.fillna(value='N/A', inplace=True)
+
+    ## helper to clean numeric fields
+    def nummate(val):
+        if pd.isna(val):
+            return 0
+        if isinstance(val, (int, float)):
+            return val
+        val = str(val).replace(',', '').strip()
+        try:
+            return float(val)
+        except ValueError:
+            return 0
+                
+    for col in columns_to_fill:
+        cleaned_df[col] = cleaned_df[col].apply(nummate)
+
+    cleaned_df[columns_to_fill] = cleaned_df[columns_to_fill].astype('Int64')
+
+    cleaned_df.fillna('N/A', inplace=True)
 
     return cleaned_df, config
 
@@ -170,11 +188,10 @@ def preprocess_data(cleaned_df, config):
     preprocessed_df['Calendar Year'] = preprocessed_df['Date'].dt.year
     '''
     
+
     # Tweaks to the press data
     if 'Title (optional)' in preprocessed_df.columns:
         preprocessed_df.drop('Title (optional)', axis='columns', inplace=True)
-    for column in ['Press Mentions', 'People Reached']:
-        preprocessed_df[column] = preprocessed_df[column].astype('Int64')
 
     # Now explode the data
     '''

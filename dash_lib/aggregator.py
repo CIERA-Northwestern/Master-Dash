@@ -83,9 +83,10 @@ class Aggregator:
                 or
             totals: The series containing the counts per year
         '''
-
+    
         # We keep one entry per ID and group. This is to avoid double-counting.
         selected_for_sum_df = df.copy()
+        selected_for_sum_df[weight_column] = selected_for_sum_df[weight_column].astype(int)
         if groupby_column is None:
             # For totals we only need one entry per ID.
             #selected_for_sum_df.drop_duplicates(subset='id', keep='first', inplace=True)
