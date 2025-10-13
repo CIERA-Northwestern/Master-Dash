@@ -39,7 +39,27 @@ Keep in mind, these files are intended to provide a very light degree of configu
 
 ### Updating and Viewing the Data
 
-There are two ways to update data on the dashboard. If you want to view it quickly and easily, you may select the 'manual upload' option in the dashboard initial prompt, drag-and-dropping the desired data into the upload space. This will display the appropriate dashboard automatically (no need to specify which metric you want to see; if all is formatted correctly, it should be determined from column names), but in a non-persistent format - you will need to reupload the csv every time you want to view it this way.
+There are two ways to update data on the dashboard. 
+1. ***In-Dashboard Manual Upload***: to view data quickly and easily, we provide an option for in-dashboard data modification, process for which is outlined below. Please be advised that this method of visualization is NON-PERSISTENT: data input is not stored for later use; if you exit out of the master-dash, you will have to reupload.
+   1. Boot up the dashboard, as usual.
+   2. Select the 'Manual Entry' toggle in the startup prompt
+   3. Drag-and-Drop your updated csv into the provided space
+      1. master-dashboard should automatically match/identify which sub-metric to display from column names of csv - DO NOT REMOVE THEM
+   4. View data as normal    
+2. ***Github Persistent Upload***: for cases when PERSISTENT storage is desired, we provide direct users to the specific repo for data.
+   1. Navigate to the raw-data folder in master-dash github repo ([here](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/data/raw_data)).
+   2. Select 'add file' in the upper right corner of the page (opposite the directory name 'master-dash/tree/...'), then choose 'Upload Files'
+   3. Drag-and-drop desired csv into slot as needed, ensuring that the file adheres to following naming conventions (necessary for pattern matching and file/pathing):
+      1. Events: "events-live-***.csv" ( * can be anything)
+      2. Press: "News_Report_Main_***.csv"
+      3. Outreach: "Outreach_Data-***.csv"
+      4. Visits: "Visits_Report-***.csv"
+   4. If desired, provide an optional message to describe changes, then select the 'commit changes' option.
+   5. This should bring the csv file into the pool for the master-dash to identify.
+   6. Additionally, for record keeping, please move the previous iteration of the file updated into the Archived-data folder ([here](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/data/archived_data)), by downloading a copy, deleting it from the raw-data folder, and uploading it to archived.
+      
+
+If you want to view it quickly and easily, you may select the 'manual upload' option in the dashboard initial prompt, drag-and-dropping the desired data into the upload space. This will display the appropriate dashboard automatically (no need to specify which metric you want to see; if all is formatted correctly, it should be determined from column names), but in a non-persistent format - you will need to reupload the csv every time you want to view it this way.
 Alternatively, you may use persistent upload by selecting the other option in initial prompt. Selecting the desired metric will display latest saved csv with appropriate interpretation. to update this go to the raw data folder [here](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/data/raw_data), and add your new csv by clicking on the "Add file" button in the upper right hand corner.
 If you update it in this way, please make sure to move the prior version of the data into the 'archived data folder' [here](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/data/archived_data)
 
