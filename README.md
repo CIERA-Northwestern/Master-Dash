@@ -8,7 +8,7 @@ This dashboard provides a way for interested individuals to explore data regardi
 Instructions are provided below for various levels of usage.
 Even if you have never edited code before, the goal of the instructions in [Level 2](#level-2-using-the-dashboard-on-your-computer) is for you to run the dashboard on your computer.
 On the other end of things, if you are comfortable with routine use of git, code testing, etc., then jump to [Level 4](#level-4-significant-customization-and-editing) to get an overview of how the dashboard works and what you might want to edit.
-To update the dashboard, jump to Level 1: Updating the Configuration and Data](#level-1-updating-the-configuration-and-data).
+To update the dashboard, jump to Level 1: Updating the Configuration and Data[Level 1](#level-1-updating-the-configuration-and-data).
 
 ## Table of Contents
 
