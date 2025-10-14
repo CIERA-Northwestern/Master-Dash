@@ -17,7 +17,6 @@ To update the dashboard, jump to [Level 1](#level-1-updating-the-configuration-a
 - [Level 2: Using the Dashboard on your Computer](#level-2-using-the-dashboard-on-your-computer)
 - [Level 3: Making Some Edits to the Code](#level-3-making-some-edits-to-the-code)
 - [Level 4: Significant Customization and Editing](#level-4-significant-customization-and-editing)
-- [Level 5: Additional Features](#level-5-additional-features)
 
 ## Level 0: Using the Dashboard Online
 
@@ -57,11 +56,7 @@ There are two ways to update data on the dashboard.
    4. If desired, provide an optional message to describe changes, then select the 'commit changes' option.
    5. This should bring the csv file into the pool for the master-dash to identify.
    6. Additionally, for record keeping, please move the previous iteration of the file updated into the Archived-data folder ([here](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/data/archived_data)), by downloading a copy, deleting it from the raw-data folder, and uploading it to archived.
-      
-
-If you want to view it quickly and easily, you may select the 'manual upload' option in the dashboard initial prompt, drag-and-dropping the desired data into the upload space. This will display the appropriate dashboard automatically (no need to specify which metric you want to see; if all is formatted correctly, it should be determined from column names), but in a non-persistent format - you will need to reupload the csv every time you want to view it this way.
-Alternatively, you may use persistent upload by selecting the other option in initial prompt. Selecting the desired metric will display latest saved csv with appropriate interpretation. to update this go to the raw data folder [here](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/data/raw_data), and add your new csv by clicking on the "Add file" button in the upper right hand corner.
-If you update it in this way, please make sure to move the prior version of the data into the 'archived data folder' [here](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/data/archived_data)
+   7. In the dashboard, select the 'reload' option in the bottom right corner, to ensure the github integration is up to date. Then, select the 'latest stored csv' option in the prompt, and then choose desired submetric to view.
 
 ## Level 2: Using the Dashboard on your Computer
 
@@ -175,67 +170,3 @@ Visit [Streamlit Sharing](https://streamlit.io/sharing) for more information.
 **Note:** you cannot deploy a streamlit app where the source is a repository owned by the organization, unless you can log into that organization's github account.
 This is true even if you have full read/write access to the organization's repositories.
 Instead you must create a fork of the repository you want to deploy, and point streamlit.io to that fork.
-
-## Level 5: Additional Features
-
-### Using and Editing Multiple Dashboards
-
-It is recommended that your repositories that use this dashboard template are a fork of the template.
-Unfortunately you cannot have multiple official forks of a single repository, nor can you have a private fork, which is necessary for dashboards with sensitive data.
-However, you can create a "manual" fork in both cases, as described below.
-
-1. **Create a New Repository**: In your GitHub/Atlassian account, create a new repository. The repository can be set to "Private" if you wish.
-
-2. **Clone the Original Repository**: Clone the public repository to your local machine and navigate to the cloned repository directory.
-
-   ```bash
-   git clone https://github.com/zhafen/root-dash.git
-   cd your-public-repo
-   ```
-
-3. **Change the setup for the remote repositories**: Designate the repository you cloned from as `upstream`, and create a new origin with the url of your private repository.
-
-   ```bash
-   git remote rename origin upstream
-   git remote add origin https://github.com/<your-username>/<your-private-repo>.git
-   ```
-
-4. **Check the result**: If done correctly, the output of `git remote -v` should be
-
-    ```bash
-    git remote -v
-    ```
-
-    > ```
-    > origin  git@github.com:<your-username>.git (fetch)
-    > origin  git@github.com:<your-username>.git (push)
-    > upstream        git@github.com:zhafen/root-dash.git (fetch)
-    > upstream        git@github.com:zhafen/root-dash.git (push)
-    > ```
-
-4. **Push to the Private Repository**: Push all branches and tags to your new private repository:
-
-   ```bash
-   git push origin --all
-   git push origin --tags
-   ```
-
-### Continuous Integration
-
-Continuous integration (automated testing) is an excellent way to check if your dashboard is likely to function for other users.
-You can enable continuous integration [via GitHub Actions](https://docs.github.com/en/actions/automating-builds-and-tests/about-continuous-integration) (also available in a tab at the top of your github repo), including adding a badge showing the status of your tests
-(shown at the top of this page).
-Some tests don't work on continuous integration,
-and are disabled until the underlying issues are addressed.
-Continuous integration can be tested locally using [act](https://github.com/nektos/act),
-which may be helpful if the issues that occur during continuous integration are system specific.
-
-### Deploying a Private App
-Streamlit has the option to deploy your code without sharing it publicly.
-More information can be found [in this section of the Streamlit Sharing documentation](https://docs.streamlit.io/streamlit-community-cloud/share-your-app#make-your-app-public-or-private).
-
-
----
-
-ChatGPT was used in the construction of this document.
-
