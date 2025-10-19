@@ -28,14 +28,6 @@ If the dashboard is currently live at [master-dash](https://the-master-dash.stre
 When the dashboard is hosted on the web in some cases you can edit the configuration and data without ever needing to download anything and view the updated dashboard without ever needing to download anything.
 This is possible for dashboards where the computations are sufficiently light to be wrapped into the interactive dashboard.
 
-### Editing the Configs
-
-
-The dashboard incorporates a series of config files (corresponding to each focus area; outreach, visits, press and events) to provide for surface-level customization. These files are found in the the root directory, i.e. [here](https://github.com/CIERA-Northwestern/Master-Dash).
-You can edit this on github by clicking on the edit button in the upper right, provided you are logged in with an account that has the necessary permissions.
-Locally this can be edited with TextEdit (mac), Notepad (Windows), or your favorite code editor.
-Keep in mind, these files are intended to provide a very light degree of configuration - in all likelihood, significant changes will require deeper work.
-
 ### Updating and Viewing the Data
 
 There are two ways to update data on the dashboard. 
@@ -57,6 +49,16 @@ There are two ways to update data on the dashboard.
    5. This should bring the csv file into the pool for the master-dash to identify.
    6. Additionally, for record keeping, please move the previous iteration of the file updated into the Archived-data folder ([here](https://github.com/CIERA-Northwestern/Master-Dash/tree/main/data/archived_data)), by downloading a copy, deleting it from the raw-data folder, and uploading it to archived.
    7. In the dashboard, select the 'reload' option in the bottom right corner, to ensure the github integration is up to date. Then, select the 'latest stored csv' option in the prompt, and then choose desired submetric to view.
+
+
+### Editing the Configs
+
+
+The dashboard incorporates a series of config files (corresponding to each focus area; outreach, visits, press and events) to provide for surface-level customization. These files are found in the the root directory, i.e. [here](https://github.com/CIERA-Northwestern/Master-Dash).
+You can edit this on github by clicking on the edit button in the upper right, provided you are logged in with an account that has the necessary permissions.
+Locally this can be edited with TextEdit (mac), Notepad (Windows), or your favorite code editor.
+Keep in mind, these files are intended to provide a very light degree of configuration - in all likelihood, significant changes will require deeper work.
+
 
 ## Level 2: Using the Dashboard on your Computer
 
