@@ -209,10 +209,6 @@ class Interface:
                                index=2,
                                key=tag+key
                                )
-        '''
-        st_loc.markdown('# Data Settings')
-
-
 
         key = 'cumulative'
         if key in ask_for:
@@ -221,7 +217,7 @@ class Interface:
                 value=display_defaults.get(key, False),
                 key=tag + key
             )
-        '''key = 'recategorize'
+        key = 'recategorize'
         if key in ask_for:
             selected_settings[key] = st_loc.checkbox(
                 'use combined categories (avoids double-counting entries)',
@@ -353,11 +349,10 @@ class Interface:
             self,
             st_loc,
             ask_for: Union[list[str], str] = [
-                'view_mode',
                 'font_scale',
-                'seaborn_style',
                 'fig_width',
                 'fig_height',
+                'view_mode',
                 'font',
                 'include_legend',
            ],
@@ -434,92 +429,6 @@ class Interface:
             )
             selected_settings[key] = value
             selected_settings[key + '_ind'] = ind
-
-        key = 'font_scale'
-        if key in ask_for:
-            selected_settings[key] = st_loc.slider(
-                'font scale',
-                0.1,
-                2.,
-                value=display_defaults.get(key, 1.),
-                key=tag + key,
-            )
-        fig_width, fig_height = matplotlib.rcParams['figure.figsize']
-        # The figure size is doubled because this is a primarily horizontal plot
-        fig_width *= 2.
-        key = 'seaborn_style'
-        if key in ask_for:
-            value, ind = selectbox(
-                st_loc,
-                'choose seaborn plot style',
-                display_options.get(key, ['whitegrid', 'white', 'darkgrid', 'dark', 'ticks',]),
-                index = display_defaults.get(key + '_ind', 0),
-                key=tag + key,
-            )
-            selected_settings[key] = value
-            selected_settings[key + '_ind'] = ind
-        key = 'fig_width'
-        if key in ask_for:
-            selected_settings[key] = st_loc.slider(
-                'figure width',
-                0.1*fig_width,
-                2.*fig_width,
-                value=display_defaults.get(key, fig_width),
-                key=tag + key,
-            )
-        key = 'fig_height'
-        if key in ask_for:
-            selected_settings[key] = st_loc.slider(
-                'figure height',
-                0.1*fig_height,
-                2.*fig_height,
-                value=display_defaults.get(key, fig_height),
-                key=tag + key,
-            )
-        
-        key = 'include_legend'
-        if key in ask_for:
-            selected_settings[key] = st_loc.checkbox(
-                'include legend',
-                value=display_defaults.get(key, True),
-                key=tag + key,
-            )
-        key = 'color_palette'
-        if key in ask_for:
-            value, ind = selectbox(
-                st_loc,
-                'color palette',
-                display_options.get(key, ['deep', 'colorblind', 'dark', 'bright', 'pastel', 'muted',]),
-                index = display_defaults.get(key + '_ind', 0),
-                key=tag + key,
-            )
-            selected_settings[key] = value
-            selected_settings[key + '_ind'] = ind
-
-        key = 'font'
-        if key in ask_for:
-            original_font = copy.copy(plt.rcParams['font.family'])[0]
-            # This can be finicky, so we'll wrap it in a try/except
-            try:
-                ## Get all installed fonts
-                font_fps = font_manager.findSystemFonts(fontpaths=None, fontext='ttf')
-                fonts = [os.path.splitext(os.path.basename(_))[0] for _ in font_fps]
-                ## Get the default font
-                default_font = font_manager.FontProperties(family='Sans Serif')
-                default_font_fp = font_manager.findfont(default_font)
-                default_index = int(np.where(np.array(font_fps) == default_font_fp)[0][0])
-                ## Make the selection
-                font_ind = st_loc.selectbox(
-                    'Select font',
-                    np.arange(len(fonts)),
-                    index=default_index,
-                    format_func=lambda x: fonts[x],
-                    key=tag + key,
-                )
-                font = font_manager.FontProperties(fname=font_fps[font_ind])
-                selected_settings[key] = font.get_name()
-            except:
-                selected_settings[key] = original_font
 
         return selected_settings
 

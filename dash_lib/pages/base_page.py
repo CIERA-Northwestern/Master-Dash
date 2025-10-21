@@ -123,15 +123,6 @@ def main(root:str,user_utils: types.ModuleType = None):
         # if you would like to re-add, uncomment relevant sections in
         # base_page, interface, and data_handler
         selected_settings = builder.settings.common['data']
-        '''data['recategorized'] = builder.recategorize_data(
-            preprocessed_df=data['preprocessed'],
-            new_categories=builder.config.get('new_categories', {}),
-            recategorize=selected_settings['recategorize'],
-            combine_single_categories=selected_settings.get(
-                'combine_single_categories',
-                False
-            ),
-        )'''
 
         ### Note:
         # for future reference, if you want to set artificial bounds for year/timescale, do it here
@@ -352,7 +343,7 @@ def main(root:str,user_utils: types.ModuleType = None):
                 if topic not in data['aggregated'].columns:
                     data['aggregated'][topic] = [0 for i in range(len(data['aggregated'].index))]
 
-        
+        print(builder.settings.common)
 
         st.header('Data Plotting')
         st.text("Note: data entries may correspond to multiple categories, and so be represented in each grouping")
@@ -427,18 +418,5 @@ def main(root:str,user_utils: types.ModuleType = None):
             builder.data_viewer.barplot(
                 data['total by instance'],
             )
-        '''
-        elif data_option == "testing":
-            st.subheader("testing chart; please disregard")
-            builder.data_viewer.testplot(
-                df = data['aggregated'],
-                month_reindex = month_redef if builder.settings.common['data']['x_column_ind'] == 0 else None, 
-                year_reindex = years_to_display,
-                totals = data['totals'],
-                y_label=builder.settings.common['data']['y_column'],
-                x_label=builder.settings.common['data']['x_column'],
-                category=builder.settings.common['data']['groupby_column']
-            )
-        '''
         # View the data directly
         builder.data_viewer.write(data)
