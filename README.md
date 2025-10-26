@@ -23,6 +23,8 @@ To update the dashboard, jump to [Level 1](#level-1-updating-the-configuration-a
 The dashboard has a plethora of features that can be interacted with via a web interface.
 If the dashboard is currently live at [master-dash](https://the-master-dash.streamlit.app/), you can use the dashboard without any additional effort.
 
+For detailed instructions in dashboard use, please refer to the Unified User Manual [here](https://docs.google.com/document/d/1_C50PGHKmGRWslbkPduNzYO5mxdseeiK/edit).
+
 ## Level 1: Updating the Configuration and Data
 
 When the dashboard is hosted on the web in some cases you can edit the configuration and data without ever needing to download anything and view the updated dashboard without ever needing to download anything.
